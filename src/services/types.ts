@@ -7,6 +7,8 @@
  */
 import type { Direction, GameMode, Point } from "@/game/engine";
 
+export type { Direction, GameMode, Point };
+
 export interface User {
   id: string;
   username: string;
