@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as PlayRouteImport } from './routes/play'
 import { Route as WatchIndexRouteImport } from './routes/watch.index'
+import { Route as WatchGameIdRouteImport } from './routes/watch.$gameId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,12 +41,18 @@ const WatchIndexRoute = WatchIndexRouteImport.update({
   path: '/watch/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WatchGameIdRoute = WatchGameIdRouteImport.update({
+  id: '/watch/$gameId',
+  path: '/watch/$gameId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
   '/play': typeof PlayRoute
+  '/watch/$gameId': typeof WatchGameIdRoute
   '/watch/': typeof WatchIndexRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
   '/play': typeof PlayRoute
+  '/watch/$gameId': typeof WatchGameIdRoute
   '/watch': typeof WatchIndexRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,23 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
   '/play': typeof PlayRoute
+  '/watch/$gameId': typeof WatchGameIdRoute
   '/watch/': typeof WatchIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/leaderboard' | '/play' | '/watch/'
+  fullPaths:
+    '/' | '/auth' | '/leaderboard' | '/play' | '/watch/$gameId' | '/watch/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/leaderboard' | '/play' | '/watch'
-  id: '__root__' | '/' | '/auth' | '/leaderboard' | '/play' | '/watch/'
+  to: '/' | '/auth' | '/leaderboard' | '/play' | '/watch/$gameId' | '/watch'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/leaderboard'
+    | '/play'
+    | '/watch/$gameId'
+    | '/watch/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +93,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   LeaderboardRoute: typeof LeaderboardRoute
   PlayRoute: typeof PlayRoute
+  WatchGameIdRoute: typeof WatchGameIdRoute
   WatchIndexRoute: typeof WatchIndexRoute
 }
 
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WatchIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/watch/$gameId': {
+      id: '/watch/$gameId'
+      path: '/watch/$gameId'
+      fullPath: '/watch/$gameId'
+      preLoaderRoute: typeof WatchGameIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -124,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   LeaderboardRoute: LeaderboardRoute,
   PlayRoute: PlayRoute,
+  WatchGameIdRoute: WatchGameIdRoute,
   WatchIndexRoute: WatchIndexRoute,
 }
 export const routeTree = rootRouteImport
