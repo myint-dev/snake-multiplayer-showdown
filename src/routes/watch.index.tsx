@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { GameBoard } from "@/components/GameBoard";
 import { backend } from "@/services";
 
-export const Route = createFileRoute("/watch")({
+export const Route = createFileRoute("/watch/")({
   head: () => ({
     meta: [
       { title: "Watch live games — Neon Serpent" },
