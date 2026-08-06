@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -77,19 +80,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Neon Serpent — Multiplayer Snake Arena" },
+      {
+        name: "description",
+        content:
+          "Play Snake in walls or pass-through mode, climb the leaderboards and spectate live games.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -114,13 +120,60 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function SiteHeader() {
+  const { session, signOut } = useAuth();
+
+  return (
+    <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-3">
+        <Link to="/" className="font-display text-lg font-bold tracking-tight text-primary">
+          NEON<span className="text-foreground">SERPENT</span>
+        </Link>
+        <nav className="flex items-center gap-4 text-sm text-muted-foreground">
+          <Link to="/play" activeProps={{ className: "text-primary" }}>
+            Play
+          </Link>
+          <Link to="/leaderboard" activeProps={{ className: "text-primary" }}>
+            Leaderboard
+          </Link>
+          <Link to="/watch" activeProps={{ className: "text-primary" }}>
+            Watch
+          </Link>
+        </nav>
+        <div className="ml-auto flex items-center gap-3">
+          {session ? (
+            <>
+              <span className="hidden text-sm text-muted-foreground sm:inline">
+                @{session.user.username}
+              </span>
+              <Button variant="outline" size="sm" onClick={() => void signOut()}>
+                Sign out
+              </Button>
+            </>
+          ) : (
+            <Button asChild size="sm">
+              <Link to="/auth">Sign in</Link>
+            </Button>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AuthProvider>
+        <div className="min-h-screen bg-background text-foreground">
+          <SiteHeader />
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </div>
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
