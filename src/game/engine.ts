@@ -68,7 +68,7 @@ function spawnFood(grid: number, occupied: Point[], seed: number): [Point, numbe
   if (free.length === 0) return [{ x: 0, y: 0 }, currentSeed];
   const [r, s] = nextRandom(currentSeed);
   currentSeed = s + 1;
-  return [free[Math.floor(r * free.length)], currentSeed];
+  return [free[Math.floor(r * free.length)]!, currentSeed];
 }
 
 export function createGame(options: {
@@ -115,7 +115,7 @@ export function step(state: GameState): GameState {
 
   const dir = state.pendingDir;
   const vector = DIRECTION_VECTORS[dir];
-  const head = state.snake[0];
+  const head = state.snake[0]!;
   let next: Point = { x: head.x + vector.x, y: head.y + vector.y };
 
   const outside =
