@@ -34,6 +34,11 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
+The frontend uses the FastAPI backend by default at `http://localhost:8000/api`.
+Start it separately with `make backend`, then run the frontend with `make frontend`.
+For a deployed backend, set `VITE_API_BASE_URL` to its API base URL (including
+the `/api` path) before building the frontend.
+
 ```sh
 git clone <this-repository-url>
 cd <repository-name>

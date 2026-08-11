@@ -2,8 +2,8 @@
  * The single backend contract for the whole app.
  *
  * UI code never talks to a network / database directly — it only ever calls
- * `backend` (see ./index.ts). Swapping the mock for a real implementation means
- * writing one more class that satisfies `BackendService`.
+ * `backend` (see ./index.ts). Both the REST and mock implementations satisfy
+ * this interface.
  */
 import type { Direction, GameMode, Point } from "@/game/engine";
 
