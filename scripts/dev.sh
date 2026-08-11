@@ -1,5 +1,28 @@
 #!/usr/bin/env bash
+#!/usr/bin/env bash
+set -euo pipefail
 
+backend_pid=""
+frontend_pid=""
+
+cleanup() {
+    trap - INT TERM EXIT
+    [[ -n "$backend_pid" ]] && kill "$backend_pid" 2>/dev/null || true
+    [[ -n "$frontend_pid" ]] && kill "$frontend_pid" 2>/dev/null || true
+}
+trap cleanup INT TERM EXIT
+
+(cd backend && uv run python main.py) &
+backend_pid=$!
+
+(cd frontend && npm run dev) &
+frontend_pid=$!
+
+wait -n "$backend_pid" "$frontend_pid"
+
+
+#codex generated dev.sh
+: '
 set -euo pipefail
 
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -27,4 +50,6 @@ trap 'cleanup; exit 0' INT TERM
 wait "$backend_pid" || exit_code=$?
 kill "$frontend_pid" 2>/dev/null || true
 wait "$frontend_pid" 2>/dev/null || true
-exit "${exit_code:-0}"
+exit "${exit_code:-0}" 
+
+'
