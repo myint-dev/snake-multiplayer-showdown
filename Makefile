@@ -20,3 +20,6 @@ frontend-tests:
 	cd frontend && npm test
 
 test: backend-tests frontend-tests
+
+backend-integration-tests:
+	cd backend && uv run pytest tests_integration

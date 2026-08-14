@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .routers import active_games, auth, scores
+from .database import initialize_database
 from .store import seed_store
 
 app = FastAPI(title="Snake Multiplayer Showdown API", version="1.0.0")
@@ -28,4 +29,5 @@ async def validation_error_handler(_: Request, exc: RequestValidationError) -> J
 app.include_router(auth.router, prefix="/api")
 app.include_router(scores.router, prefix="/api")
 app.include_router(active_games.router, prefix="/api")
+initialize_database()
 seed_store()
