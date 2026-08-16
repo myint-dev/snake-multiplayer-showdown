@@ -12,9 +12,7 @@ COPY frontend ./
 ARG VITE_API_BASE_URL=/api
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 RUN npm run build \
-    && entry="$(find .output/public/assets -maxdepth 1 -type f -name 'index-*.js' -printf '%f\n' | head -n 1)" \
-    && test -n "$entry" \
-    && printf '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Neon Serpent</title></head><body><script type="module" src="/assets/%s"></script></body></html>\n' "$entry" > .output/public/index.html
+    && test -s .output/public/index.html
 
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS runtime
 WORKDIR /app
