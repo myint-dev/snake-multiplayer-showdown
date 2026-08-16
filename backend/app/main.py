@@ -1,9 +1,12 @@
 """FastAPI application configuration."""
 
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from .routers import active_games, auth, scores
 from .database import initialize_database
@@ -31,3 +34,23 @@ app.include_router(scores.router, prefix="/api")
 app.include_router(active_games.router, prefix="/api")
 initialize_database()
 seed_store()
+
+
+static_dir = Path(__file__).resolve().parent.parent / "static"
+if static_dir.is_dir():
+    # Hashed JavaScript and CSS bundles can be cached independently of the SPA
+    # document. The catch-all route below handles the document and client routes.
+    assets_dir = static_dir / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{path:path}", include_in_schema=False)
+    async def serve_frontend(path: str):
+        """Serve static files and fall back to the frontend for client routes."""
+        if path == "api" or path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="Not found")
+
+        requested_file = (static_dir / path).resolve()
+        if requested_file.is_relative_to(static_dir) and requested_file.is_file():
+            return FileResponse(requested_file)
+        return FileResponse(static_dir / "index.html")
