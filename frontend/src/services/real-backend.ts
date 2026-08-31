@@ -11,6 +11,13 @@ import type { GameMode } from "@/game/engine";
 const SESSION_TOKEN_KEY = "snake.session-token.v1";
 const DEFAULT_API_BASE_URL = "http://localhost:8000/api";
 
+function getDefaultApiBaseUrl(): string {
+  if (typeof window !== "undefined" && window.location.port !== "5173" && window.location.port !== "3000") {
+    return "/api";
+  }
+  return DEFAULT_API_BASE_URL;
+}
+
 class HttpBackendError extends BackendError {
   constructor(
     message: string,
@@ -27,7 +34,7 @@ export class RealBackend implements BackendService {
   private listeners = new Set<(session: Session | null) => void>();
   private readonly baseUrl: string;
 
-  constructor(baseUrl = import.meta.env.VITE_API_BASE_URL ?? DEFAULT_API_BASE_URL) {
+  constructor(baseUrl = import.meta.env.VITE_API_BASE_URL ?? getDefaultApiBaseUrl()) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
   }
 

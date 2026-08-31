@@ -1,8 +1,11 @@
-.PHONY: install backend frontend dev backend-tests frontend-tests test
+.PHONY: install backend frontend dev build backend-tests frontend-tests test
 
 install:
 	cd backend && uv sync
 	cd frontend && npm install
+
+build:
+	cd frontend && npm run build
 
 backend:
 	cd backend && uv run python main.py
