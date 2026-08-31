@@ -5,6 +5,8 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("SNAKE_ROYALE_DATABASE_URL") or "sqlite:///./snake.db"
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = "postgresql+psycopg://" + DATABASE_URL[len("postgresql://"):]
 options = {"connect_args": {"check_same_thread": False}} if DATABASE_URL.startswith("sqlite") else {}
 if DATABASE_URL.endswith(":memory:"): options["poolclass"] = StaticPool
 engine = create_engine(DATABASE_URL, **options)

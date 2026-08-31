@@ -69,6 +69,7 @@ def seed_store():
  with SessionLocal.begin() as s:
   for i,(name,password) in enumerate((("Ada","snakepass"),("Blaze","snakepass"),("Cy","snakepass"))):
    u=User(id=f"seed-user-{i+1}",username=name,created_at=created+i);users.append(u);s.add(UserRecord(id=u.id,username=name,username_normalized=name.lower(),password_hash=hash_password(password),created_at=u.created_at))
+  s.flush()
   for i,(u,m,score) in enumerate(((users[0],GameMode.walls,420),(users[1],GameMode.walls,310),(users[2],GameMode.pass_through,515))):s.add(ScoreRecord(id=f"seed-score-{i+1}",user_id=u.id,username=u.username,mode=m.value,score=score,created_at=created+1000+i))
   for i,(u,m,score) in enumerate(((users[0],GameMode.walls,80),(users[1],GameMode.pass_through,125))):
    snap=GameSnapshot(grid=20,snake=[Point(x=8,y=10),Point(x=7,y=10)],food=Point(x=14,y=4),dir=Direction.right,score=score,status="running");s.add(ActiveGameRecord(id=f"seed-game-{i+1}",user_id=u.id,username=u.username,mode=m.value,score=score,started_at=created+2000+i,is_bot=False,snapshot=snap.model_dump(mode="json")))
