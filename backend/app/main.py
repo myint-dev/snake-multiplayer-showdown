@@ -41,10 +41,20 @@ async def validation_error_handler(_: Request, exc: RequestValidationError) -> J
     first_error = exc.errors()[0] if exc.errors() else {}
     return JSONResponse(status_code=400, content={"message": first_error.get("msg", "Invalid request data")})
 
-# health check endpoint for Render 
-@app.get("/healthz")
+# Health check endpoints for Render and load balancers (supporting GET and HEAD)
+@app.api_route("/healthz", methods=["GET", "HEAD"])
+@app.api_route("/health", methods=["GET", "HEAD"])
+@app.api_route("/api/health", methods=["GET", "HEAD"])
 async def health_check():
     return {"status": "ok"}
+
+
+# Alias for active games in case older configs or external probes hit /api/active-games
+@app.api_route("/api/active-games", methods=["GET", "HEAD"], include_in_schema=False)
+async def legacy_active_games():
+    from .store import store
+    return store.active_games()
+
 
 # 2. Register API routers
 app.include_router(auth.router, prefix="/api")
@@ -80,7 +90,7 @@ if static_dir and (static_dir / "assets").is_dir():
     app.mount("/assets", StaticFiles(directory=static_dir / "assets"), name="assets")
 
 
-@app.get("/{path:path}", include_in_schema=False)
+@app.api_route("/{path:path}", methods=["GET", "HEAD"], include_in_schema=False)
 async def serve_frontend(path: str):
     """Serve static files and fall back to the frontend for client routes."""
     if path == "api" or path.startswith("api/"):

@@ -7,7 +7,7 @@ from ..store import StoredUser,store
 router=APIRouter(prefix="/games",tags=["active-games"])
 @router.post("",response_model=ActiveGame,status_code=status.HTTP_201_CREATED,responses={401:{"model":Error}})
 def start_game(payload:StartGameRequest,stored_user:Annotated[StoredUser,Depends(current_user)])->ActiveGame:return store.create_game(stored_user.user,payload.mode,payload.snapshot)
-@router.get("/active",response_model=list[ActiveGame])
+@router.api_route("/active",methods=["GET","HEAD"],response_model=list[ActiveGame])
 def list_active_games()->list[ActiveGame]:return store.active_games()
 @router.get("/{game_id}",response_model=ActiveGame,responses={404:{"model":Error}})
 def get_game(game_id:str)->ActiveGame:

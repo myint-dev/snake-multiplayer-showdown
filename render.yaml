@@ -8,7 +8,7 @@ services:
     dockerfilePath: ./Dockerfile
     dockerContext: .
     plan: free
-    healthCheckPath: /api/active-games
+    healthCheckPath: /healthz
     #preDeployCommand: ./scripts/render-deploy-check.sh
     envVars:
       - key: SNAKE_ROYALE_DATABASE_URL
