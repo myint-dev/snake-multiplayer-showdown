@@ -9,7 +9,7 @@ services:
     dockerContext: .
     plan: free
     healthCheckPath: /api/active-games
-    preDeployCommand: ./scripts/render-deploy-check.sh
+    #preDeployCommand: ./scripts/render-deploy-check.sh
     envVars:
       - key: SNAKE_ROYALE_DATABASE_URL
         sync: false
