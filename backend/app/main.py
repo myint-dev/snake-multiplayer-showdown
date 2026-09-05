@@ -41,7 +41,12 @@ async def validation_error_handler(_: Request, exc: RequestValidationError) -> J
     first_error = exc.errors()[0] if exc.errors() else {}
     return JSONResponse(status_code=400, content={"message": first_error.get("msg", "Invalid request data")})
 
+# health check endpoint for Render 
+@app.get("/healthz")
+async def health_check():
+    return {"status": "ok"}
 
+# 2. Register API routers
 app.include_router(auth.router, prefix="/api")
 app.include_router(scores.router, prefix="/api")
 app.include_router(active_games.router, prefix="/api")
