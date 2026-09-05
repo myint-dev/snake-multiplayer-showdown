@@ -1,0 +1,17 @@
+# Render Blueprint Specification
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: snake-multiplayer-showdown
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /api/active-games
+    preDeployCommand: ./scripts/render-deploy-check.sh
+    envVars:
+      - key: SNAKE_ROYALE_DATABASE_URL
+        sync: false
+      - key: PORT
+        value: 8000

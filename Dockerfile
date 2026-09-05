@@ -16,8 +16,10 @@ WORKDIR /app
 COPY backend/pyproject.toml backend/uv.lock ./
 RUN uv sync --frozen --no-dev
 COPY backend ./
+COPY scripts ./scripts
+RUN chmod +x ./scripts/*.sh
 COPY --from=frontend-build /frontend/dist/client ./static
 RUN mkdir -p /data
 EXPOSE 8000
 VOLUME ["/data"]
-CMD ["/app/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/app/scripts/render-deploy-check.sh", "/app/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
