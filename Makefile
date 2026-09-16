@@ -1,4 +1,4 @@
-.PHONY: install backend frontend dev build backend-tests frontend-tests test
+.PHONY: install backend frontend dev build backend-tests frontend-tests test backend-integration-tests
 
 install:
 	cd backend && uv sync
@@ -17,12 +17,12 @@ dev:
 	./scripts/dev.sh
 
 backend-tests:
-	cd backend && uv run pytest
+	cd backend && uv run pytest tests
 
 frontend-tests:
 	cd frontend && npm test
 
-test: backend-tests frontend-tests
-
 backend-integration-tests:
 	cd backend && uv run pytest tests_integration
+
+test: backend-tests frontend-tests backend-integration-tests

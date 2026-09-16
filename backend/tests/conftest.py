@@ -5,13 +5,14 @@ from pathlib import Path
 
 os.environ["DATABASE_URL"] = "sqlite+pysqlite:///:memory:"
 os.environ["SNAKE_ROYALE_DATABASE_URL"] = "sqlite+pysqlite:///:memory:"
+os.environ["PBKDF2_ITERATIONS"] = "1000"
 
 # Ensure a mock static directory exists for isolated unit testing in CI
 # when the frontend dist bundle has not been built yet.
 _temp_static_dir = Path(tempfile.mkdtemp(prefix="snake-test-static-"))
 _index_file = _temp_static_dir / "index.html"
 _index_file.write_text("<!DOCTYPE html><html><head><title>Snake Multiplayer Showdown</title></head><body><div id='root'></div></body></html>")
-os.environ.setdefault("SNAKE_ROYALE_STATIC_DIR", str(_temp_static_dir))
+os.environ["SNAKE_ROYALE_STATIC_DIR"] = str(_temp_static_dir)
 
 
 @atexit.register

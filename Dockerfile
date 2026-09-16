@@ -4,7 +4,6 @@ COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend ./
 RUN npm run build
-RUN npm run build:static-shell
 
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS backend
 ENV PYTHONUNBUFFERED=1 \

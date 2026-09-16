@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 render_logs.txt
 
+# Node & Frontend
 node_modules
 dist
 dist-ssr
@@ -16,6 +17,35 @@ dist-ssr
 .tanstack/**
 .nitro
 *.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+env/
+venv/
+ENV/
+*.egg-info/
+
+# Testing & Quality
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.*
+!.env.example
 
 # Wrangler / Cloudflare
 .wrangler/

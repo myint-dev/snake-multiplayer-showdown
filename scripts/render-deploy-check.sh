@@ -23,16 +23,17 @@ log_error() {
 # ------------------------------------------------------------------------------
 log_info "Verifying database configuration..."
 
-# Fallback to DATABASE_URL if SNAKE_ROYALE_DATABASE_URL is not set
-if [[ -z "${SNAKE_ROYALE_DATABASE_URL:-}" ]]; then
-    if [[ -n "${DATABASE_URL:-}" ]]; then
-        log_warn "SNAKE_ROYALE_DATABASE_URL is not set, falling back to DATABASE_URL."
-        export SNAKE_ROYALE_DATABASE_URL="$DATABASE_URL"
+# Fallback to DATABASE_URL if set, or fallback to SQLite default
+if [[ -n "${DATABASE_URL:-}" && ( -z "${SNAKE_ROYALE_DATABASE_URL:-}" || "${SNAKE_ROYALE_DATABASE_URL:-}" == "sqlite:////data/snake_royale.db" ) ]]; then
+    log_info "Using DATABASE_URL from environment."
+    export SNAKE_ROYALE_DATABASE_URL="$DATABASE_URL"
+elif [[ -z "${SNAKE_ROYALE_DATABASE_URL:-}" ]]; then
+    if [[ -d "/data" ]]; then
+        log_warn "Neither SNAKE_ROYALE_DATABASE_URL nor DATABASE_URL is set, falling back to SQLite in /data."
+        export SNAKE_ROYALE_DATABASE_URL="sqlite:////data/snake_royale.db"
     else
-        log_error "Missing required environment variable: SNAKE_ROYALE_DATABASE_URL"
-        log_error "Please configure SNAKE_ROYALE_DATABASE_URL in your Render service environment variables."
-        log_error "Example: postgres://avnadmin:<password>@<host>:<port>/<dbname>?sslmode=require"
-        exit 1
+        log_warn "Neither SNAKE_ROYALE_DATABASE_URL nor DATABASE_URL is set, falling back to local SQLite."
+        export SNAKE_ROYALE_DATABASE_URL="sqlite:///./snake.db"
     fi
 fi
 
